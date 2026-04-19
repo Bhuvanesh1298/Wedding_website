@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wedding Celebration — Groom &amp; Bride</title>
+  <meta name="description" content="Join us in celebrating the wedding of Groom Name and Bride Name.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__logo">S & P</div>
+    <button class="navbar__toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="navbar__links" id="navLinks">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#story">Our Story</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#rsvp">RSVP</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero" class="hero">
+    <div class="hero__image-wrapper">
+      <img src="Hero Image.jpg" alt="Wedding illustration with temple and couple" class="hero__image">
+      <div class="hero__overlay">
+        <p class="hero__subtitle">Together with their families</p>
+        <h1 class="hero__groom">Siddharth</h1>
+        <span class="hero__ampersand">&amp;</span>
+        <h1 class="hero__bride">Priya</h1>
+      </div>
+    </div>
+    <div class="hero__scroll-indicator">
+      <span>Scroll Down</span>
+      <div class="hero__scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- Save the Date -->
+  <section id="save-the-date" class="section save-date">
+    <div class="container">
+      <h2 class="section__title animate-on-scroll">Save the Date</h2>
+      <div class="section__divider animate-on-scroll"></div>
+      <p class="save-date__hint animate-on-scroll">Scratch the card to reveal our special day</p>
+      <div class="scratch-card animate-on-scroll">
+        <div class="scratch-card__reveal">
+          <p class="scratch-card__label">Our Wedding Day</p>
+          <p class="scratch-card__date" id="weddingDate">Date Coming Soon</p>
+          <p class="scratch-card__sub">Stay tuned for more details</p>
+        </div>
+        <canvas id="scratchCanvas" class="scratch-card__canvas"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Countdown -->
+  <section id="countdown" class="section countdown-section">
+    <div class="container">
+      <p class="countdown__heading animate-on-scroll">Counting down to forever</p>
+      <div class="countdown__grid animate-on-scroll">
+        <div class="countdown__unit">
+          <span class="countdown__number" id="cd-days">--</span>
+          <span class="countdown__text">Days</span>
+        </div>
+        <div class="countdown__dot">·</div>
+        <div class="countdown__unit">
+          <span class="countdown__number" id="cd-hours">--</span>
+          <span class="countdown__text">Hours</span>
+        </div>
+        <div class="countdown__dot">·</div>
+        <div class="countdown__unit">
+          <span class="countdown__number" id="cd-minutes">--</span>
+          <span class="countdown__text">Mins</span>
+        </div>
+        <div class="countdown__dot">·</div>
+        <div class="countdown__unit">
+          <span class="countdown__number" id="cd-seconds">--</span>
+          <span class="countdown__text">Secs</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story — sticky scroll -->
+  <div class="story-scroll" id="story">
+    <div class="story-scroll__sticky">
+      <div class="story__inner">
+        <h2 class="story__subtitle">How it Started</h2>
+        <p class="story__desc">A chance encounter neither of us saw coming — one quiet evening that quietly changed everything. This is where our story began.</p>
+        <div class="story__photo-stack">
+          <div class="story__photo story__photo--1">
+            <div class="story__photo-placeholder"><span>Our First Photo</span></div>
+          </div>
+          <div class="story__photo story__photo--2">
+            <div class="story__photo-placeholder story__photo-placeholder--2"><span>Together Now</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Details Section -->
+  <section id="events" class="section events">
+    <div class="container">
+      <h2 class="section__title animate-on-scroll">Wedding Events</h2>
+      <div class="section__divider animate-on-scroll"></div>
+
+      <div class="events__grid">
+        <div class="event-card animate-on-scroll scale-in" style="--delay: 0s">
+          <div class="event-card__icon">🪔</div>
+          <h3 class="event-card__title">Mehendi Ceremony</h3>
+          <div class="event-card__detail">
+            <strong>Date &amp; Time</strong>
+            <p>Date Coming Soon</p>
+          </div>
+          <div class="event-card__detail">
+            <strong>Venue</strong>
+            <p>Venue Details Coming Soon</p>
+          </div>
+          <div class="event-card__detail">
+            <strong>Dress Code</strong>
+            <p>Traditional / Festive Attire</p>
+          </div>
+        </div>
+
+        <div class="event-card animate-on-scroll scale-in" style="--delay: 0.15s">
+          <div class="event-card__icon">💐</div>
+          <h3 class="event-card__title">Sangeet Night</h3>
+          <div class="event-card__detail">
+            <strong>Date &amp; Time</strong>
+            <p>Date Coming Soon</p>
+          </div>
+          <div class="event-card__detail">
+            <strong>Venue</strong>
+            <p>Venue Details Coming Soon</p>
+          </div>
+          <div class="event-card__detail">
+            <strong>Dress Code</strong>
+            <p>Glamorous / Party Wear</p>
+          </div>
+        </div>
+
+        <div class="event-card animate-on-scroll scale-in" style="--delay: 0.3s">
+          <div class="event-card__icon">🛕</div>
+          <h3 class="event-card__title">Wedding Ceremony</h3>
+          <div class="event-card__detail">
+            <strong>Date &amp; Time</strong>
+            <p>Date Coming Soon</p>
+          </div>
+          <div class="event-card__detail">
+            <strong>Venue</strong>
+            <p>Venue Details Coming Soon</p>
+          </div>
+          <div class="event-card__detail">
+            <strong>Dress Code</strong>
+            <p>Traditional / Ethnic Wear</p>
+          </div>
+        </div>
+
+        <div class="event-card animate-on-scroll scale-in" style="--delay: 0.45s">
+          <div class="event-card__icon">🎉</div>
+          <h3 class="event-card__title">Reception</h3>
+          <div class="event-card__detail">
+            <strong>Date &amp; Time</strong>
+            <p>Date Coming Soon</p>
+          </div>
+          <div class="event-card__detail">
+            <strong>Venue</strong>
+            <p>Venue Details Coming Soon</p>
+          </div>
+          <div class="event-card__detail">
+            <strong>Dress Code</strong>
+            <p>Formal / Indo-Western</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section id="gallery" class="section gallery">
+    <div class="container">
+      <h2 class="section__title animate-on-scroll">Gallery</h2>
+      <div class="section__divider animate-on-scroll"></div>
+      <p class="gallery__subtitle animate-on-scroll">Moments we cherish together</p>
+
+      <div class="gallery__grid">
+        <div class="gallery__item animate-on-scroll scale-in" style="--delay: 0s">
+          <div class="gallery__placeholder">
+            <span>Photo 1</span>
+          </div>
+        </div>
+        <div class="gallery__item gallery__item--tall animate-on-scroll scale-in" style="--delay: 0.1s">
+          <div class="gallery__placeholder">
+            <span>Photo 2</span>
+          </div>
+        </div>
+        <div class="gallery__item animate-on-scroll scale-in" style="--delay: 0.2s">
+          <div class="gallery__placeholder">
+            <span>Photo 3</span>
+          </div>
+        </div>
+        <div class="gallery__item animate-on-scroll scale-in" style="--delay: 0.3s">
+          <div class="gallery__placeholder">
+            <span>Photo 4</span>
+          </div>
+        </div>
+        <div class="gallery__item gallery__item--tall animate-on-scroll scale-in" style="--delay: 0.4s">
+          <div class="gallery__placeholder">
+            <span>Photo 5</span>
+          </div>
+        </div>
+        <div class="gallery__item animate-on-scroll scale-in" style="--delay: 0.5s">
+          <div class="gallery__placeholder">
+            <span>Photo 6</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RSVP Section -->
+  <section id="rsvp" class="section rsvp">
+    <div class="container">
+      <h2 class="section__title animate-on-scroll">RSVP</h2>
+      <div class="section__divider animate-on-scroll"></div>
+      <p class="rsvp__subtitle animate-on-scroll">We would be honored by your presence</p>
+
+      <form class="rsvp__form animate-on-scroll" id="rsvpForm">
+        <div class="form-group">
+          <input type="text" id="name" name="name" required placeholder=" ">
+          <label for="name">Your Full Name</label>
+        </div>
+
+        <div class="form-group">
+          <input type="email" id="email" name="email" required placeholder=" ">
+          <label for="email">Email Address</label>
+        </div>
+
+        <div class="form-group">
+          <select id="guests" name="guests" required>
+            <option value="" disabled selected>Number of Guests</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5+</option>
+          </select>
+        </div>
+
+        <div class="form-group form-group--radio">
+          <p class="form-group__label">Will you be attending?</p>
+          <div class="radio-options">
+            <label class="radio-option">
+              <input type="radio" name="attending" value="yes" required>
+              <span class="radio-option__custom"></span>
+              <span>Joyfully Accept</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="attending" value="no">
+              <span class="radio-option__custom"></span>
+              <span>Regretfully Decline</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <textarea id="dietary" name="dietary" rows="3" placeholder=" "></textarea>
+          <label for="dietary">Dietary Requirements or Message</label>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Send RSVP</button>
+      </form>
+
+      <div class="rsvp__success" id="rsvpSuccess">
+        <div class="rsvp__success-icon">✓</div>
+        <h3>Thank You!</h3>
+        <p>Your RSVP has been received. We look forward to celebrating with you!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__decor"></div>
+    <div class="container">
+      <h2 class="footer__names">Siddharth &amp; Priya</h2>
+      <p class="footer__hashtag">#SiddharthWedsPriya</p>
+      <p class="footer__note">We can't wait to celebrate with you!</p>
+      <div class="footer__divider"></div>
+      <p class="footer__credit">Made with love</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
