@@ -81,7 +81,7 @@
 
   // --- Countdown timer ---
   // Update WEDDING_DATE to the actual date when known
-  const WEDDING_DATE = new Date('2026-12-12T09:00:00');
+  const WEDDING_DATE = new Date('2026-07-02T09:00:00');
 
   function updateCountdown() {
     const now = new Date();
