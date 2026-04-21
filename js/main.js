@@ -22,11 +22,110 @@
     scrollObserver.observe(el);
   });
 
+  // --- Rose petal confetti ---
+  function launchPetalConfetti(originX, originY) {
+    const petalCanvas = document.createElement('canvas');
+    petalCanvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+    document.body.appendChild(petalCanvas);
+    const pc = petalCanvas.getContext('2d');
+
+    function resize() {
+      petalCanvas.width  = window.innerWidth;
+      petalCanvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    const COLORS = ['#ff6b8a','#ff8fa3','#ffb3c6','#ff4d6d','#c9184a','#ff85a1','#ffa3b5','#ffccd5'];
+    const petals = [];
+
+    function Petal(burst, ox, oy) {
+      this.x    = burst ? ox : Math.random() * petalCanvas.width;
+      this.y    = burst ? oy : -20;
+      this.size = Math.random() * 10 + 7;
+      this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      this.rot   = Math.random() * Math.PI * 2;
+      this.rotV  = (Math.random() - 0.5) * 0.14;
+      this.life  = 1;
+      this.burst = burst;
+
+      if (burst) {
+        const angle = Math.random() * Math.PI * 2;
+        const spd   = Math.random() * 14 + 5;
+        this.vx = Math.cos(angle) * spd;
+        this.vy = Math.sin(angle) * spd - 8;
+        this.grav  = 0.35;
+        this.decay = 0.007;
+      } else {
+        this.vx    = (Math.random() - 0.5) * 1.2;
+        this.vy    = Math.random() * 1.4 + 0.8;
+        this.grav  = 0;
+        this.sway  = Math.random() * 0.025 + 0.008;
+        this.swayO = Math.random() * Math.PI * 2;
+        this.decay = 0.0018;
+      }
+    }
+
+    Petal.prototype.update = function(t) {
+      if (this.burst) {
+        this.vy += this.grav;
+      } else {
+        this.vx += Math.sin(t * this.sway + this.swayO) * 0.04;
+      }
+      this.x   += this.vx;
+      this.y   += this.vy;
+      this.rot += this.rotV;
+      this.life -= this.decay;
+    };
+
+    Petal.prototype.draw = function(ctx) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, this.life);
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot);
+      const s = this.size;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo( s * 0.5, -s * 0.5,  s,      -s * 0.15,  s * 0.4,  s * 0.5);
+      ctx.bezierCurveTo( s * 0.1,  s * 0.85, -s * 0.1, s * 0.85, -s * 0.4,  s * 0.5);
+      ctx.bezierCurveTo(-s,       -s * 0.15, -s * 0.5, -s * 0.5,  0,        0);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+      ctx.restore();
+    };
+
+    // Burst
+    for (let i = 0; i < 90; i++) petals.push(new Petal(true, originX, originY));
+
+    // Start gentle rain after burst settles
+    let rainTimer = setTimeout(() => {
+      rainTimer = setInterval(() => petals.push(new Petal(false)), 130);
+    }, 900);
+
+    let t = 0;
+    let raf;
+    function animate() {
+      pc.clearRect(0, 0, petalCanvas.width, petalCanvas.height);
+      t += 0.016;
+      for (let i = petals.length - 1; i >= 0; i--) {
+        petals[i].update(t);
+        if (petals[i].life > 0) {
+          petals[i].draw(pc);
+        } else {
+          petals.splice(i, 1);
+        }
+      }
+      raf = requestAnimationFrame(animate);
+    }
+    animate();
+  }
+
   // --- Scratch card ---
   const scratchCanvas = document.getElementById('scratchCanvas');
   if (scratchCanvas) {
     const ctx = scratchCanvas.getContext('2d');
     const card = scratchCanvas.closest('.scratch-card');
+    let revealed = false;
 
     function initScratch() {
       scratchCanvas.width = card.offsetWidth;
@@ -61,13 +160,17 @@
     }
 
     function checkReveal() {
+      if (revealed) return;
       const data = ctx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height).data;
       let cleared = 0;
       for (let i = 3; i < data.length; i += 4) { if (data[i] < 128) cleared++; }
       if (cleared / (data.length / 4) > 0.5) {
+        revealed = true;
         scratchCanvas.style.transition = 'opacity 0.6s ease';
         scratchCanvas.style.opacity = '0';
         scratchCanvas.style.pointerEvents = 'none';
+        const rect = card.getBoundingClientRect();
+        launchPetalConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
       }
     }
 
