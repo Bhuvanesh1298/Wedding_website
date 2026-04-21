@@ -22,6 +22,34 @@
     scrollObserver.observe(el);
   });
 
+  // --- Gyroscope (shared) ---
+  // gyroTarget: raw normalised gamma (-1…+1); gyroX: smoothed value used by petals
+  let gyroTarget = 0;
+  let gyroX      = 0;
+  let _gyroReady = false;
+
+  function _onOrientation(e) {
+    // gamma = left/right tilt, ±90°. Map ±45° → ±1 for a responsive feel.
+    if (e.gamma != null) gyroTarget = Math.max(-1, Math.min(1, e.gamma / 45));
+  }
+
+  function _attachGyroListener() {
+    if (_gyroReady) return;
+    _gyroReady = true;
+    // Chrome on Android exposes 'deviceorientationabsolute' (compass-stabilised).
+    // Every other browser uses the standard 'deviceorientation'.
+    const evtName = (typeof window.ondeviceorientationabsolute !== 'undefined')
+      ? 'deviceorientationabsolute'
+      : 'deviceorientation';
+    window.addEventListener(evtName, _onOrientation, { passive: true });
+  }
+
+  // Android / desktop: no permission gate — attach immediately.
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission !== 'function') {
+    _attachGyroListener();
+  }
+
   // --- Rose petal confetti ---
   function launchPetalConfetti(originX, originY) {
     const petalCanvas = document.createElement('canvas');
@@ -35,29 +63,6 @@
     }
     resize();
     window.addEventListener('resize', resize, { passive: true });
-
-    // --- Gyroscope support ---
-    let gyroX = 0; // normalised gamma: -1 (left) to +1 (right)
-
-    function handleOrientation(e) {
-      if (e.gamma !== null) gyroX = e.gamma / 90;
-    }
-
-    if (typeof DeviceOrientationEvent !== 'undefined') {
-      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        // iOS 13+ requires explicit permission (triggered here because we're
-        // already inside a user-gesture call-stack from the scratch interaction)
-        DeviceOrientationEvent.requestPermission()
-          .then(state => {
-            if (state === 'granted') {
-              window.addEventListener('deviceorientation', handleOrientation, { passive: true });
-            }
-          })
-          .catch(() => {});
-      } else {
-        window.addEventListener('deviceorientation', handleOrientation, { passive: true });
-      }
-    }
 
     const COLORS = ['#ff6b8a','#ff8fa3','#ffb3c6','#ff4d6d','#c9184a','#ff85a1','#ffa3b5','#ffccd5'];
     const petals = [];
@@ -130,6 +135,7 @@
     let t = 0;
     let raf;
     function animate() {
+      gyroX += (gyroTarget - gyroX) * 0.08; // smooth raw sensor → used by Petal.update
       pc.clearRect(0, 0, petalCanvas.width, petalCanvas.height);
       t += 0.016;
       for (let i = petals.length - 1; i >= 0; i--) {
@@ -202,7 +208,20 @@
     scratchCanvas.addEventListener('mousedown', (e) => { painting = true; scratchAt(...getXY(e)); });
     scratchCanvas.addEventListener('mousemove', (e) => { if (painting) scratchAt(...getXY(e)); });
     window.addEventListener('mouseup', () => { painting = false; });
-    scratchCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); painting = true; scratchAt(...getXY(e)); }, { passive: false });
+    scratchCanvas.addEventListener('touchstart', (e) => {
+      // iOS 13+: touchstart IS a valid user-activation context for the permission API.
+      // Request here so gyro is live before the card is fully revealed.
+      if (!_gyroReady &&
+          typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(state => { if (state === 'granted') _attachGyroListener(); })
+          .catch(() => {});
+      }
+      e.preventDefault();
+      painting = true;
+      scratchAt(...getXY(e));
+    }, { passive: false });
     scratchCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (painting) scratchAt(...getXY(e)); }, { passive: false });
     window.addEventListener('touchend', () => { painting = false; });
   }
