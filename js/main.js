@@ -36,6 +36,29 @@
     resize();
     window.addEventListener('resize', resize, { passive: true });
 
+    // --- Gyroscope support ---
+    let gyroX = 0; // normalised gamma: -1 (left) to +1 (right)
+
+    function handleOrientation(e) {
+      if (e.gamma !== null) gyroX = e.gamma / 90;
+    }
+
+    if (typeof DeviceOrientationEvent !== 'undefined') {
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // iOS 13+ requires explicit permission (triggered here because we're
+        // already inside a user-gesture call-stack from the scratch interaction)
+        DeviceOrientationEvent.requestPermission()
+          .then(state => {
+            if (state === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+            }
+          })
+          .catch(() => {});
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+      }
+    }
+
     const COLORS = ['#ff6b8a','#ff8fa3','#ffb3c6','#ff4d6d','#c9184a','#ff85a1','#ffa3b5','#ffccd5'];
     const petals = [];
 
@@ -71,6 +94,8 @@
         this.vy += this.grav;
       } else {
         this.vx += Math.sin(t * this.sway + this.swayO) * 0.04;
+        this.vx += gyroX * 0.18;                          // tilt steers the drift
+        this.vx  = Math.max(-6, Math.min(6, this.vx));   // cap so petals don't fly off-screen
       }
       this.x   += this.vx;
       this.y   += this.vy;
