@@ -107,52 +107,91 @@
   updateCountdown();
   setInterval(updateCountdown, 1000);
 
-  // --- Story sticky scroll ---
-  const storyScroll = document.getElementById('story');
+  // --- Our Story — horizontal swipe cards ---
+  const storySection  = document.getElementById('story');
+  const storyPhotoArea = document.getElementById('storyPhotoArea');
   const storySubtitle = document.querySelector('.story__subtitle');
-  const storyDesc    = document.querySelector('.story__desc');
-  const photo2       = document.querySelector('.story__photo--2');
+  const storyDesc     = document.querySelector('.story__desc');
+  const storyHint     = document.getElementById('storySwipeHint');
 
   const storyBeats = [
     {
       subtitle: 'How it Started',
-      desc: 'A chance encounter neither of us saw coming — one quiet evening that quietly changed everything. This is where our story began.'
+      desc: 'A chance encounter neither of us saw coming — one quiet evening that quietly changed everything. This is where our story began.',
+      hint: 'swipe to continue →'
     },
     {
       subtitle: 'Where We Are Now',
-      desc: 'Through every laugh, every adventure, and every quiet moment together — we found in each other a home. And now, forever awaits.'
+      desc: 'Through every laugh, every adventure, and every quiet moment together — we found in each other a home. And now, forever awaits.',
+      hint: '← swipe · swipe →'
+    },
+    {
+      subtitle: 'What Awaits',
+      desc: 'A lifetime of mornings together, of adventures yet to come, and a love that only grows deeper with every passing day.',
+      hint: '← swipe back'
     }
   ];
 
-  let currentBeat = 0;
+  let storyBeat = 0;
+  let swipeTouchStartX = 0;
+  let swipeTouchStartY = 0;
 
-  function handleStoryScroll() {
-    if (!storyScroll || !storySubtitle) return;
-    const rect = storyScroll.getBoundingClientRect();
-    const scrolled = -rect.top;
-    const scrollable = storyScroll.offsetHeight - window.innerHeight;
-    const progress = Math.max(0, Math.min(1, scrolled / scrollable));
-    const beat = progress >= 0.5 ? 1 : 0;
+  function setStoryBeat(beat) {
+    if (beat === storyBeat) return;
+    storyBeat = beat;
 
-    if (beat !== currentBeat) {
-      currentBeat = beat;
-      storySubtitle.style.opacity = '0';
-      storyDesc.style.opacity = '0';
-      setTimeout(() => {
-        storySubtitle.textContent = storyBeats[beat].subtitle;
-        storyDesc.textContent = storyBeats[beat].desc;
-        storySubtitle.style.opacity = '1';
-        storyDesc.style.opacity = '1';
-      }, 400);
-      if (beat === 1) {
-        photo2.classList.add('fallen');
-      } else {
-        photo2.classList.remove('fallen');
-      }
-    }
+    // Crossfade text
+    storySubtitle.style.opacity = '0';
+    storyDesc.style.opacity = '0';
+    setTimeout(() => {
+      storySubtitle.textContent = storyBeats[beat].subtitle;
+      storyDesc.textContent     = storyBeats[beat].desc;
+      if (storyHint) storyHint.textContent = storyBeats[beat].hint;
+      storySubtitle.style.opacity = '1';
+      storyDesc.style.opacity = '1';
+    }, 350);
+
+    // Remove all beat classes, apply current
+    storySection.classList.remove('story--beat-1', 'story--beat-2');
+    if (beat > 0) storySection.classList.add('story--beat-' + beat);
   }
 
-  window.addEventListener('scroll', handleStoryScroll, { passive: true });
+  if (storyPhotoArea) {
+    storyPhotoArea.addEventListener('touchstart', (e) => {
+      swipeTouchStartX = e.touches[0].clientX;
+      swipeTouchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    // Intercept clearly-horizontal moves so the browser doesn't steal the
+    // gesture for page scrolling (which would fire touchcancel instead of touchend)
+    storyPhotoArea.addEventListener('touchmove', (e) => {
+      const dx = Math.abs(swipeTouchStartX - e.touches[0].clientX);
+      const dy = Math.abs(swipeTouchStartY - e.touches[0].clientY);
+      if (dx > dy && dx > 8) e.preventDefault();
+    }, { passive: false });
+
+    storyPhotoArea.addEventListener('touchend', (e) => {
+      const dx = swipeTouchStartX - e.changedTouches[0].clientX;
+      const dy = swipeTouchStartY - e.changedTouches[0].clientY;
+      // Only fire if clearly horizontal (more X than Y, and at least 40px)
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx > 0 && storyBeat < storyBeats.length - 1) setStoryBeat(storyBeat + 1); // swipe left → next
+      if (dx < 0 && storyBeat > 0) setStoryBeat(storyBeat - 1);                    // swipe right → back
+    }, { passive: true });
+
+    // Mouse drag support (desktop)
+    let mouseStartX = 0;
+    let mouseDown = false;
+    storyPhotoArea.addEventListener('mousedown', (e) => { mouseDown = true; mouseStartX = e.clientX; });
+    storyPhotoArea.addEventListener('mouseup', (e) => {
+      if (!mouseDown) return;
+      mouseDown = false;
+      const dx = mouseStartX - e.clientX;
+      if (Math.abs(dx) < 40) return;
+      if (dx > 0 && storyBeat < storyBeats.length - 1) setStoryBeat(storyBeat + 1);
+      if (dx < 0 && storyBeat > 0) setStoryBeat(storyBeat - 1);
+    });
+  }
 
   // --- Hero scroll parallax ---
   const heroImage = document.querySelector('.hero__image');
