@@ -64,14 +64,20 @@
     resize();
     window.addEventListener('resize', resize, { passive: true });
 
-    const COLORS = ['#ff6b8a','#ff8fa3','#ffb3c6','#ff4d6d','#c9184a','#ff85a1','#ffa3b5','#ffccd5'];
+    const PETAL_COLORS    = ['#ff6b8a','#ff8fa3','#ffb3c6','#ff4d6d','#c9184a','#ff85a1','#ffa3b5','#ffccd5'];
+    const CONFETTI_COLORS = ['#ffd700','#ffe066','#fff0a0','#f4a261','#e8c46a','#ffc94d','#ffffff','#ffb3c6'];
+    const SHAPES = ['rect', 'dot', 'ribbon'];
     const petals = [];
 
-    function Petal(burst, ox, oy) {
+    function Petal(burst, ox, oy, shape) {
+      // shape: undefined/'petal' = rose petal; 'rect'/'dot'/'ribbon' = confetti
+      this.shape = shape || 'petal';
       this.x    = burst ? ox : Math.random() * petalCanvas.width;
       this.y    = burst ? oy : -20;
       this.size = Math.random() * 10 + 7;
-      this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      this.color = (this.shape === 'petal')
+        ? PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)]
+        : CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
       this.rot   = Math.random() * Math.PI * 2;
       this.rotV  = (Math.random() - 0.5) * 0.14;
       this.life  = 1;
@@ -79,11 +85,11 @@
 
       if (burst) {
         const angle = Math.random() * Math.PI * 2;
-        const spd   = Math.random() * 14 + 5;
+        const spd   = Math.random() * 6 + 2;   // softer: was 14+5
         this.vx = Math.cos(angle) * spd;
-        this.vy = Math.sin(angle) * spd - 8;
-        this.grav  = 0.35;
-        this.decay = 0.007;
+        this.vy = Math.sin(angle) * spd - 4;   // gentler upward kick: was -8
+        this.grav  = 0.18;                      // slower fall: was 0.35
+        this.decay = 0.005;                     // lingers longer: was 0.007
       } else {
         this.vx    = (Math.random() - 0.5) * 1.2;
         this.vy    = Math.random() * 1.4 + 0.8;
@@ -99,8 +105,8 @@
         this.vy += this.grav;
       } else {
         this.vx += Math.sin(t * this.sway + this.swayO) * 0.04;
-        this.vx += gyroX * 0.18;                          // tilt steers the drift
-        this.vx  = Math.max(-6, Math.min(6, this.vx));   // cap so petals don't fly off-screen
+        this.vx += gyroX * 0.18;
+        this.vx  = Math.max(-6, Math.min(6, this.vx));
       }
       this.x   += this.vx;
       this.y   += this.vy;
@@ -114,18 +120,34 @@
       ctx.translate(this.x, this.y);
       ctx.rotate(this.rot);
       const s = this.size;
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.bezierCurveTo( s * 0.5, -s * 0.5,  s,      -s * 0.15,  s * 0.4,  s * 0.5);
-      ctx.bezierCurveTo( s * 0.1,  s * 0.85, -s * 0.1, s * 0.85, -s * 0.4,  s * 0.5);
-      ctx.bezierCurveTo(-s,       -s * 0.15, -s * 0.5, -s * 0.5,  0,        0);
       ctx.fillStyle = this.color;
-      ctx.fill();
+
+      if (this.shape === 'petal') {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo( s * 0.5, -s * 0.5,  s,       -s * 0.15,  s * 0.4,  s * 0.5);
+        ctx.bezierCurveTo( s * 0.1,  s * 0.85, -s * 0.1,  s * 0.85, -s * 0.4,  s * 0.5);
+        ctx.bezierCurveTo(-s,       -s * 0.15, -s * 0.5, -s * 0.5,   0,        0);
+        ctx.fill();
+      } else if (this.shape === 'rect') {
+        // small square confetti
+        ctx.fillRect(-s * 0.4, -s * 0.25, s * 0.8, s * 0.5);
+      } else if (this.shape === 'dot') {
+        // small circle confetti
+        ctx.beginPath();
+        ctx.arc(0, 0, s * 0.35, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (this.shape === 'ribbon') {
+        // thin elongated strip
+        ctx.fillRect(-s * 0.15, -s * 0.6, s * 0.3, s * 1.2);
+      }
+
       ctx.restore();
     };
 
-    // Burst
-    for (let i = 0; i < 90; i++) petals.push(new Petal(true, originX, originY));
+    // Burst: 55 petals + 45 confetti shapes mixed together
+    for (let i = 0; i < 55; i++) petals.push(new Petal(true, originX, originY, 'petal'));
+    for (let i = 0; i < 45; i++) petals.push(new Petal(true, originX, originY, SHAPES[i % SHAPES.length]));
 
     // Start gentle rain after burst settles
     let rainTimer = setTimeout(() => {
