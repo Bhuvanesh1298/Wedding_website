@@ -237,7 +237,7 @@ a {
 
 .hero__subtitle {
   font-family: var(--font-display);
-  font-size: clamp(0.7rem, 3vw, 1rem);
+  font-size: clamp(0.77rem, 3.3vw, 1.1rem);
   font-weight: 400;
   font-style: italic;
   color: var(--text-secondary);
@@ -249,7 +249,7 @@ a {
 
 .hero__groom {
   font-family: var(--font-script);
-  font-size: clamp(2.4rem, 11vw, 4.5rem);
+  font-size: clamp(2.28rem, 10.45vw, 4.28rem);
   font-weight: 400;
   color: var(--maroon);
   line-height: 1.1;
@@ -262,7 +262,7 @@ a {
 
 .hero__bride {
   font-family: var(--font-script);
-  font-size: clamp(2.4rem, 11vw, 4.5rem);
+  font-size: clamp(2.28rem, 10.45vw, 4.28rem);
   font-weight: 400;
   color: var(--maroon);
   line-height: 1.1;
