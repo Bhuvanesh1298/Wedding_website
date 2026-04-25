@@ -225,7 +225,7 @@ a {
 
 .hero__overlay {
   position: absolute;
-  top: 4%;
+  top: 18%;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
