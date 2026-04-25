@@ -8,9 +8,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="hero-image.png">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
+  <!-- Page loader — hidden once hero image is ready -->
+  <div id="pageLoader" aria-hidden="true">
+    <div class="loader__text">B <span>&amp;</span> M</div>
+  </div>
 
   <!-- Navigation -->
   <nav class="navbar" id="navbar">

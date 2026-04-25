@@ -2,6 +2,40 @@
    Wedding Website Styles
    ============================================ */
 
+/* --- Page loader --- */
+#pageLoader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s ease;
+}
+
+#pageLoader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader__text {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 8vw, 4rem);
+  color: var(--maroon);
+  letter-spacing: 0.15em;
+  animation: loaderPulse 1.2s ease-in-out infinite;
+}
+
+.loader__text span {
+  color: var(--gold);
+}
+
+@keyframes loaderPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
 /* --- CSS Custom Properties --- */
 :root {
   --gold: #C6922A;

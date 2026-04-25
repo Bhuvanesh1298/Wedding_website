@@ -5,6 +5,22 @@
 (function () {
   'use strict';
 
+  // --- Page loader: hide once hero image is ready ---
+  const heroImg = document.querySelector('.hero__image');
+  const loader  = document.getElementById('pageLoader');
+  function dismissLoader() {
+    loader.classList.add('fade-out');
+    setTimeout(() => loader.remove(), 650);
+  }
+  if (heroImg && loader) {
+    if (heroImg.complete) {
+      dismissLoader();
+    } else {
+      heroImg.addEventListener('load',  dismissLoader, { once: true });
+      heroImg.addEventListener('error', dismissLoader, { once: true });
+    }
+  }
+
   // --- Scroll-based reveal animations ---
   const scrollObserver = new IntersectionObserver(
     (entries) => {
