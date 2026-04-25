@@ -695,6 +695,14 @@ a {
   box-shadow: 0 8px 30px rgba(58, 42, 26, 0.15);
 }
 
+.event-card--image-only .event-card__image {
+  aspect-ratio: auto;
+}
+
+.event-card--image-only .event-card__image img {
+  height: auto;
+}
+
 .event-card__image {
   width: 100%;
   aspect-ratio: 4 / 3;
