@@ -249,7 +249,7 @@ a {
 
 .hero__groom {
   font-family: var(--font-script);
-  font-size: clamp(2.28rem, 10.45vw, 4.28rem);
+  font-size: clamp(1.7rem, 7.5vw, 3.4rem);
   font-weight: 400;
   color: var(--maroon);
   line-height: 1.1;
@@ -262,7 +262,7 @@ a {
 
 .hero__bride {
   font-family: var(--font-script);
-  font-size: clamp(2.28rem, 10.45vw, 4.28rem);
+  font-size: clamp(1.7rem, 7.5vw, 3.4rem);
   font-weight: 400;
   color: var(--maroon);
   line-height: 1.1;
