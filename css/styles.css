@@ -723,6 +723,7 @@ a {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   transition-delay: var(--delay, 0s);
   overflow: hidden;
+  position: relative;
 }
 
 .event-card:hover {
@@ -806,6 +807,48 @@ a {
 .event-card__map-link:hover {
   color: var(--maroon);
   border-color: var(--maroon);
+}
+
+/* --- Event card location strip --- */
+.event-card__location {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  background: var(--maroon);
+  color: var(--gold-light);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  width: 100%;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.event-card__location:hover,
+.event-card__location:focus-visible {
+  background: var(--maroon-dark);
+  color: var(--gold);
+}
+
+.event-card__location-pin {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--gold);
+}
+
+.event-card__location:hover .event-card__location-pin,
+.event-card__location:focus-visible .event-card__location-pin {
+  color: var(--gold-light);
+}
+
+.event-card__location-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* --- RSVP Section --- */
