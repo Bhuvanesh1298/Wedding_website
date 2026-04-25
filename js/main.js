@@ -478,19 +478,51 @@
   const rsvpSuccess = document.getElementById('rsvpSuccess');
 
   if (rsvpForm) {
+    const rsvpSadMsg      = document.getElementById('rsvpSadMsg');
+    const rsvpEventsGroup = document.getElementById('rsvpEventsGroup');
+    const rsvpGuestsGroup = document.getElementById('rsvpGuestsGroup');
+    const rsvpSuccessNo   = document.getElementById('rsvpSuccessNo');
+
+    const errorAttending = document.getElementById('errorAttending');
+    const errorName      = document.getElementById('errorName');
+
+    rsvpForm.querySelectorAll('input[name="attending"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const val = rsvpForm.querySelector('input[name="attending"]:checked')?.value;
+        rsvpSadMsg.classList.toggle('show', val === 'no');
+        rsvpEventsGroup.classList.toggle('show', val === 'yes');
+        rsvpGuestsGroup.style.display = val === 'no' ? 'none' : '';
+        errorAttending.classList.remove('show');
+      });
+    });
+
+    rsvpForm.querySelector('#name').addEventListener('input', () => {
+      errorName.classList.remove('show');
+    });
+
     rsvpForm.addEventListener('submit', function (e) {
       e.preventDefault();
+
+      const attending  = rsvpForm.querySelector('input[name="attending"]:checked');
+      const nameVal    = rsvpForm.querySelector('#name').value.trim();
+      let valid = true;
+
+      if (!attending) { errorAttending.classList.add('show'); valid = false; }
+      if (!nameVal)   { errorName.classList.add('show');      valid = false; }
+      if (!valid) return;
 
       const submitBtn = rsvpForm.querySelector('.btn--primary');
       submitBtn.textContent = 'Sending…';
       submitBtn.disabled = true;
-
-      const attending = rsvpForm.querySelector('input[name="attending"]:checked');
+      const isNo       = attending?.value === 'no';
+      const joiningFor = [...rsvpForm.querySelectorAll('input[name="events"]:checked')]
+        .map(cb => cb.value).join(', ');
       const payload = {
-        joining:  attending ? attending.value : '',
-        name:     rsvpForm.querySelector('#name').value.trim(),
-        guests:   rsvpForm.querySelector('#guests').value,
-        note:     rsvpForm.querySelector('#note').value.trim()
+        joining:    attending ? attending.value : '',
+        name:       nameVal,
+        guests:     isNo ? '' : rsvpForm.querySelector('#guests').value,
+        joiningFor: joiningFor,
+        note:       rsvpForm.querySelector('#note').value.trim()
       };
 
       fetch(SHEET_URL, {
@@ -501,7 +533,11 @@
       })
         .then(() => {
           rsvpForm.style.display = 'none';
-          rsvpSuccess.classList.add('show');
+          if (isNo) {
+            rsvpSuccessNo.classList.add('show');
+          } else {
+            rsvpSuccess.classList.add('show');
+          }
         })
         .catch(() => {
           submitBtn.textContent = 'Try again';

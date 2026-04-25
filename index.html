@@ -166,7 +166,7 @@
         <p class="form-group__label">Are you coming to the party?</p>
         <div class="attend-options">
           <label class="attend-option attend-option--yes">
-            <input type="radio" name="attending" value="yes" required>
+            <input type="radio" name="attending" value="yes">
             <span class="attend-icon">&#x1F942;</span>
             <span class="attend-label">Count me in!</span>
           </label>
@@ -176,13 +176,37 @@
             <span class="attend-label">Can't make it</span>
           </label>
         </div>
+        <p class="rsvp__error" id="errorAttending">Please let us know if you're joining! 🎉</p>
 
-        <div class="form-group">
-          <input type="text" id="name" name="name" required placeholder=" ">
-          <label for="name">Your name (we'll save you a seat!)</label>
+        <!-- Sad message — shown when can't make it -->
+        <p class="rsvp__sad-msg" id="rsvpSadMsg">We totally understand — we'll miss you! 💛 Sending all our love your way.</p>
+
+        <!-- Events question — shown when attending -->
+        <div class="rsvp__events-group" id="rsvpEventsGroup">
+          <p class="form-group__label">Which of these are you coming for? 🥳</p>
+          <div class="events-check">
+            <label class="events-check__option">
+              <input type="checkbox" name="events" value="Engagement">
+              <span>💍 Engagement Ceremony</span>
+            </label>
+            <label class="events-check__option">
+              <input type="checkbox" name="events" value="Wedding">
+              <span>🛕 The Wedding</span>
+            </label>
+            <label class="events-check__option">
+              <input type="checkbox" name="events" value="Reception">
+              <span>🎊 Reception Party</span>
+            </label>
+          </div>
         </div>
 
         <div class="form-group">
+          <input type="text" id="name" name="name" placeholder=" ">
+          <label for="name">Your name (we'll save you a seat!)</label>
+        </div>
+        <p class="rsvp__error" id="errorName">We'd love to know your name! 😊</p>
+
+        <div class="form-group" id="rsvpGuestsGroup">
           <select id="guests" name="guests">
             <option value="" disabled selected>How many guests are joining?</option>
             <option value="1">Just me &#x1F338;</option>
@@ -194,7 +218,7 @@
         </div>
 
         <div class="form-group">
-          <textarea id="note" name="note" rows="3" placeholder=" "></textarea>
+          <textarea id="note" name="note" rows="1" placeholder=" "></textarea>
           <label for="note">A little note for us</label>
         </div>
 
@@ -205,6 +229,12 @@
         <div class="rsvp__success-icon">&#x1F370;</div>
         <h3>You're on the list!</h3>
         <p>We received your RSVP and we cannot wait to celebrate with you. See you soon!</p>
+      </div>
+
+      <div class="rsvp__success" id="rsvpSuccessNo">
+        <div class="rsvp__success-icon">&#x1F49B;</div>
+        <h3>We'll miss you!</h3>
+        <p>We totally understand. Know that you'll be in our hearts on the day — we'll save a memory from the celebrations just for you!</p>
       </div>
     </div>
   </section>
