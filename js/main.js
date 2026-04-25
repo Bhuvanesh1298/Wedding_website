@@ -292,31 +292,37 @@
   updateCountdown();
   setInterval(updateCountdown, 1000);
 
-  // --- Our Story — horizontal swipe cards ---
-  const storySection  = document.getElementById('story');
+  // --- Our Story — horizontal swipe carousel ---
+  const storySection   = document.getElementById('story');
   const storyPhotoArea = document.getElementById('storyPhotoArea');
-  const storySubtitle = document.querySelector('.story__subtitle');
-  const storyDesc     = document.querySelector('.story__desc');
-  const storyHint     = document.getElementById('storySwipeHint');
+  const storySubtitle  = document.querySelector('.story__subtitle');
+  const storyDesc      = document.querySelector('.story__desc');
+  const storyHint      = document.getElementById('storySwipeHint');
 
   const storyBeats = [
     {
-      subtitle: 'How it Started',
-      desc: 'A chance encounter neither of us saw coming — one quiet evening that quietly changed everything. This is where our story began.',
-      hint: 'swipe to continue →'
+      subtitle: 'Once upon a Batchmate',
+      desc: 'Not soulmates, or so we thought. No shared classes, no reasons to meet \u2013 just a club, a bunch of friends and zero idea what was coming.',
+      hint: 'swipe to continue \u2192'
     },
     {
-      subtitle: 'Where We Are Now',
-      desc: 'Through every laugh, every adventure, and every quiet moment together — we found in each other a home. And now, forever awaits.',
-      hint: '← swipe · swipe →'
+      subtitle: 'The Perfect Sunrise',
+      desc: 'A beach, a dawn and something neither of us planned. Old friends brought us back together. The ocean did the rest.',
+      hint: '\u2190 swipe \u00b7 swipe \u2192'
     },
     {
-      subtitle: 'What Awaits',
-      desc: 'A lifetime of mornings together, of adventures yet to come, and a love that only grows deeper with every passing day.',
-      hint: '← swipe back'
+      subtitle: 'Garba and 4AM confession',
+      desc: 'The Garba night that refused to end and the streets that stretched till sunrise, a little caf\u00e9 at dawn heard everything our hearts whispered.',
+      hint: '\u2190 swipe \u00b7 swipe \u2192'
+    },
+    {
+      subtitle: 'Sealed by the mountains',
+      desc: 'He had the feeling. She had a plan. The Munnar hills had the front row. She asked the question with a crocheted bouquet. He said Yes before the hills could echo it back.',
+      hint: '\u2190 swipe back'
     }
   ];
 
+  const BEAT_CLASSES = ['story--beat-1', 'story--beat-2', 'story--beat-3'];
   let storyBeat = 0;
   let swipeTouchStartX = 0;
   let swipeTouchStartY = 0;
@@ -325,7 +331,6 @@
     if (beat === storyBeat) return;
     storyBeat = beat;
 
-    // Crossfade text
     storySubtitle.style.opacity = '0';
     storyDesc.style.opacity = '0';
     setTimeout(() => {
@@ -336,8 +341,7 @@
       storyDesc.style.opacity = '1';
     }, 350);
 
-    // Remove all beat classes, apply current
-    storySection.classList.remove('story--beat-1', 'story--beat-2');
+    storySection.classList.remove(...BEAT_CLASSES);
     if (beat > 0) storySection.classList.add('story--beat-' + beat);
   }
 
@@ -347,8 +351,6 @@
       swipeTouchStartY = e.touches[0].clientY;
     }, { passive: true });
 
-    // Intercept clearly-horizontal moves so the browser doesn't steal the
-    // gesture for page scrolling (which would fire touchcancel instead of touchend)
     storyPhotoArea.addEventListener('touchmove', (e) => {
       const dx = Math.abs(swipeTouchStartX - e.touches[0].clientX);
       const dy = Math.abs(swipeTouchStartY - e.touches[0].clientY);
@@ -358,13 +360,11 @@
     storyPhotoArea.addEventListener('touchend', (e) => {
       const dx = swipeTouchStartX - e.changedTouches[0].clientX;
       const dy = swipeTouchStartY - e.changedTouches[0].clientY;
-      // Only fire if clearly horizontal (more X than Y, and at least 40px)
       if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-      if (dx > 0 && storyBeat < storyBeats.length - 1) setStoryBeat(storyBeat + 1); // swipe left → next
-      if (dx < 0 && storyBeat > 0) setStoryBeat(storyBeat - 1);                    // swipe right → back
+      if (dx > 0 && storyBeat < storyBeats.length - 1) setStoryBeat(storyBeat + 1);
+      if (dx < 0 && storyBeat > 0) setStoryBeat(storyBeat - 1);
     }, { passive: true });
 
-    // Mouse drag support (desktop)
     let mouseStartX = 0;
     let mouseDown = false;
     storyPhotoArea.addEventListener('mousedown', (e) => { mouseDown = true; mouseStartX = e.clientX; });
@@ -471,6 +471,9 @@
   window.addEventListener('scroll', handleScrollIndicator, { passive: true });
 
   // --- RSVP Form handling ---
+  // Replace the placeholder below with your deployed Apps Script URL
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxOQdCx-psjaWCPJr_1NJMWthMDbbpHx4nZWlpZtECV8nETTrjrE085XpwTxVdLiGqZcw/exec';
+
   const rsvpForm = document.getElementById('rsvpForm');
   const rsvpSuccess = document.getElementById('rsvpSuccess');
 
@@ -478,15 +481,32 @@
     rsvpForm.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      // Simulate submission
       const submitBtn = rsvpForm.querySelector('.btn--primary');
-      submitBtn.textContent = 'Sending...';
+      submitBtn.textContent = 'Sending…';
       submitBtn.disabled = true;
 
-      setTimeout(() => {
-        rsvpForm.style.display = 'none';
-        rsvpSuccess.classList.add('show');
-      }, 1000);
+      const attending = rsvpForm.querySelector('input[name="attending"]:checked');
+      const payload = {
+        joining:  attending ? attending.value : '',
+        name:     rsvpForm.querySelector('#name').value.trim(),
+        guests:   rsvpForm.querySelector('#guests').value,
+        note:     rsvpForm.querySelector('#note').value.trim()
+      };
+
+      fetch(SHEET_URL, {
+        method: 'POST',
+        mode:   'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body:   JSON.stringify(payload)
+      })
+        .then(() => {
+          rsvpForm.style.display = 'none';
+          rsvpSuccess.classList.add('show');
+        })
+        .catch(() => {
+          submitBtn.textContent = 'Try again';
+          submitBtn.disabled = false;
+        });
     });
   }
 

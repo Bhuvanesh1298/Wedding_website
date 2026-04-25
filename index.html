@@ -96,20 +96,23 @@
     </div>
   </section>
 
-  <!-- Our Story — swipe cards -->
+  <!-- Our Story — swipe carousel -->
   <section id="story" class="section story">
     <div class="story__inner">
-      <h2 class="story__subtitle animate-on-scroll">How it Started</h2>
-      <p class="story__desc animate-on-scroll">A chance encounter neither of us saw coming — one quiet evening that quietly changed everything. This is where our story began.</p>
+      <h2 class="story__subtitle animate-on-scroll">Once upon a Batchmate</h2>
+      <p class="story__desc animate-on-scroll">Not soulmates, or so we thought. No shared classes, no reasons to meet &ndash; just a club, a bunch of friends and zero idea what was coming.</p>
       <div class="story__photo-area" id="storyPhotoArea">
         <div class="story__photo story__photo--1">
-          <div class="story__photo-placeholder"><span>Our First Photo</span></div>
+          <img src="assets/College days.jpg" alt="College days">
         </div>
         <div class="story__photo story__photo--2">
-          <div class="story__photo-placeholder story__photo-placeholder--2"><span>Together Now</span></div>
+          <img src="assets/Beach.JPG" alt="Sunrise at the beach">
         </div>
         <div class="story__photo story__photo--3">
-          <div class="story__photo-placeholder story__photo-placeholder--3"><span>What Awaits</span></div>
+          <img src="assets/Garba night.jpg" alt="Garba night">
+        </div>
+        <div class="story__photo story__photo--4">
+          <img src="assets/Munnar.webp" alt="Munnar hills">
         </div>
       </div>
       <p class="story__swipe-hint" id="storySwipeHint">swipe to continue →</p>
@@ -180,11 +183,6 @@
         </div>
 
         <div class="form-group">
-          <input type="email" id="email" name="email" required placeholder=" ">
-          <label for="email">Email address</label>
-        </div>
-
-        <div class="form-group">
           <select id="guests" name="guests">
             <option value="" disabled selected>How many guests are joining?</option>
             <option value="1">Just me &#x1F338;</option>
@@ -196,8 +194,8 @@
         </div>
 
         <div class="form-group">
-          <textarea id="dietary" name="dietary" rows="3" placeholder=" "></textarea>
-          <label for="dietary">Song request, dietary needs, or a little note for us</label>
+          <textarea id="note" name="note" rows="3" placeholder=" "></textarea>
+          <label for="note">A little note for us</label>
         </div>
 
         <button type="submit" class="btn btn--primary">Send with Love &#x1F49B;</button>
