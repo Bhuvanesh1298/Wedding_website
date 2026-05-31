@@ -1,0 +1,3 @@
+# Word Documents and Temp Files
+*.docx
+~$*
